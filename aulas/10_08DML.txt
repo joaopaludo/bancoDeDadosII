@@ -1,0 +1,109 @@
+-- DML: insert, update, delete, select
+
+select * from cargo;
+select * from disciplina;
+select * from emprestimo;
+show datestyle;
+select * from usuario;
+select * from historico;
+select * from embarque;
+select * from stock;
+select * from aluno;
+select * from peca;
+
+-- Exemplos de insert
+insert into cargo values('C8', 'Programador', 20000.99);
+
+insert into cargo values('C9', 'DBA', 1500*10);
+
+insert into disciplina
+values (
+	(select max(coddis) + 1 from disciplina),
+	'Disciplina genérica',
+	80
+);
+
+insert into emprestimo
+values(
+	(select max(codemp) + 1 from emprestimo),
+	1001,
+	1,
+	'01/04/2023'
+);
+
+insert into usuario(codusu, nomusu)
+values(999, 'Flavin do Pneu');
+
+
+
+-- Exemplos de update
+-- aumentar em 10% o salário do programador
+update cargo set vlrsal = vlrsal * 1.1 where descar = 'Programador';
+
+-- remover a letra C da coluna codcar de todos os cargos
+alter table funcionario
+drop constraint fun_codcar_fk;
+
+update funcionario set codcar = replace(codcar, 'C', '');
+
+update cargo set codcar = trim(substr(codcar, 2, 1));
+
+alter table funcionario
+add constraint fun_codcar_fk foreign key(codcar) references cargo(codcar)
+-- on delete cascade
+-- on update cascade;
+
+
+
+-- Exemplos de delete
+-- Excluir notas de alunos cuja nota seja < 6
+delete from historico where vlrnot < 6;
+
+-- excluir embarques onde quantidade embarcada < 1000
+delete from embarque where qtdemb < 1000;
+
+-- excluir itens da tabela stock cujos códigos sejam múltiplos de 3
+delete from stock where mod(item_id, 3) = 0;
+
+-- excluir todos os emprestimos
+delete from emprestimo;
+
+-- limpar todos os valores da coluna corpec da tabela peça
+update peca set corpec = null;
+
+-- remover a coluna endalu da tabela aluno
+alter table aluno drop column endalu;
+
+
+
+-- Exemplos de select
+-- relatório de usuários com empréstimo
+select u.codusu, u.nomusu, e.datemp
+from usuario u
+inner join emprestimo e on u.codusu = e.codusu
+order by u.nomusu;
+
+-- relatório de alunos e a média de suas notas
+select a.codalu, a.nomalu, trunc(avg(h.vlrnot), 2) media
+from aluno a
+inner join historico h on a.codalu = h.codalu
+group by a.codalu, a.nomalu
+order by media desc;
+
+-- relatório dos usuários, reservas, livros e biblioteca da reserva
+select u.codusu, u.nomusu, r.datres, l.titliv, b.nombib
+from usuario u
+inner join reserva r on r.codusu = u.codusu
+inner join livro l on l.codliv = r.codliv
+inner join biblioteca b on b.codbib = l.codbib
+order by u.nomusu asc, r.datres desc;
+
+-- outro
+select f.numfun, f.nomfun, c.descar, c.vlrsal, d.desdep
+from funcionario f
+inner join cargo c on c.codcar = f.codcar
+inner join departamento d on d.coddep = f.coddep
+where c.vlrsal > 500
+order by c.vlrsal desc;
+
+select * from aluno where nomalu like 'F%';

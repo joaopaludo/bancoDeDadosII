@@ -1,0 +1,39 @@
+DML
+
+insert
+- Incluir dados em tabelas
+- INSERT INTO tabela [(coluna [, coluna...])] VALUES (conteúdo, conteúdo, ...);
+- Ex: insert into aluno (codalu, nomalu) values (1, 'Fulano');
+- inserindo várias linhas: INSERT INTO tabela (coluna, colunas, ...) SELECT comando-select;
+			   INSERT INTO copia_aluno SELECT * FROM aluno;
+			   INSERT INTO aluno VALUES (1, 'Fulano', 'Rua A', 1), (2, 'Ciclano', 'Rua B', 2), (3, 'Beltrano', 'Rua C', 1);
+
+
+update
+- atualiza registros na base
+- UPDATE tabela SET coluna=valor, coluna=valor,... [WHERE condição];
+- exemplo:
+	UPDATE aluno SET nomalu='Alberto Bergamota' WHERE codalu = 2;
+
+delete
+- excluir registros da base
+- DELETE FROM tabela [WHERE condição];
+- exemplo:
+	DELETE FROM aluno;
+	DELETE FROM aluno WHERE codalu = 1;
+
+select
+- comando para consulta de dados
+- SELECT [EXPRESSAO] [tabela.coluna [AS] rotulo {, tabela.coluna }*] FROM tabela {} ...
+- Funções especiais auxiliam a elaboração de consultas
+- JOIN -> comando para juntar informações de mais de uma tabela
+	SELF JOIN
+	NATURAL JOIN
+	INNER JOIN
+	RIGHT [OUTER] JOIN
+	LEFT [OUTER] JOIN
+	FULL [OUTER] JOIN
+	CROSS JOIN
+- Regra geral para uso de joins: se há N tabelas envolvidas na consulta, são necessários N - 1 joins.
+- Operadores: IN, EXISTS, ANY, SOME
+
