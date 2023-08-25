@@ -1,0 +1,78 @@
+Aula 24/08/2023
+BDII
+
+Views
+DDL + faz uso de DML (select)
+
+View = visão -> meio de prover ao usuário uma "visão personalizada" do banco de dados;
+		compensa fazer uma view em situações de selects complexos e/ou extensos
+
+Vantagens de uso de views:
+	- simplificar consultas
+	- gerar visões diferentes dos dados
+	- controle de acesso (segurança)
+
+O SGBD armazena apenas o "texto" da view, então ela não ocupa espaço no banco (apenas o espaço em termos de string).
+
+-> CREATE VIEW nome_visao[(nome_coluna[,...])] AS comando_select;
+
+Ex:
+CREATE VIEW DEP_VW(CODIGO, NOME) AS
+SELECT CODDEP, NOMDEP
+FROM DEPARTAMENTO
+WHERE RAMTEL > 2000
+ORDER BY NOME ASC;
+
+=================================================================================================================================================
+
+-- Aula 24/08 -> Views
+
+create view relatorio_funcionarios_vw as
+select f.numfun codigo, f.nomfun nome, c.vlrsal salario
+from funcionario f
+inner join cargo c on c.codcar = f.codcar
+where c.vlrsal > 800
+order by nome;
+
+
+-- consultando a view
+select * from relatorio_funcionarios_vw;
+
+
+
+-- Ex1
+create view relatorio_emprestimos_vw as
+select e.codemp, e.codliv, e.codusu codusuemp, e.datemp, u.* from emprestimo e
+inner join usuario u on u.codusu = e.codusu
+order by u.nomusu, e.datemp;
+
+select * from relatorio_emprestimos_vw;
+
+-- insert into emprestimo values(20020, 1004, 5, current_timestamp);
+
+
+
+-- Ex2
+create or replace view relatorio_fornecedores_vw as
+select * from fornecedor f
+where nomcid = 'Porto Alegre' and codfor >= 1;
+
+select * from relatorio_fornecedores_vw;
+
+
+
+-- Ex4
+create view relatorio_embarques_vw as
+select f.nomfor, f.nomcid from fornecedor f
+inner join embarque e on e.codfor = f.codfor
+where e.qtdemb > 100;
+
+select * from relatorio_embarques_vw;
+
+-- insert into embarque values(1, 2, 150);
+
+
+-- excluindo uma view
+drop view relatorio_emprestimos_vw;
+
+

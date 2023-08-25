@@ -1,0 +1,96 @@
+DCL -> Data Control Language (Subset da DDL)
+
+
+Autenticação X Autorização
+Autenticação: fulano tem um usuário, tem acesso.
+Autorização: permissões que o fulano possui.
+
+
+Pricipais comandos:
+- CREATE USER
+- GRANT
+- REVOKE
+
+DCL:
+- Criação e controle de acesso
+- Controle de privilégios
+- Uso de schemas / views
+
+
+Criação de usuário (varia para cada BD):
+postgres: CREATE USER nome_usuario [ [WITH] [SUPERUSER | NONSUPERUSER | LOGIN | NOLOGIN | CREATEDB | NOCREATEDB | CREATEROLE | NOCREATEROLE | 
+	  CREATEUSER | NOCREATEUSER | PASSWORD 'password'] ];
+
+Ex:
+CREATE USER aluno WITH PASSWORD '123456';
+
+ALTER USER aluno WITH PASSWORD '12345678';
+
+DROP USER aluno;
+
+
+
+GRANT: concede permissões ao(s) usuário(s).
+	Ex: GRANT select, insert ON tb_pessoa TO aluno;
+
+
+REVOKE: revoga parmissões do(s) usuário(s).
+	Ex: REVOKE select, insert ON tb_pessoa FROM aluno;
+
+
+
+Grupos / Roles:
+Forma de definir um conjunto de permissões
+
+CREATE GROUP nome_grupo;
+
+GRANT select ON empregado TO nome_grupo;
+
+GRANT nome_grupo TO user;
+
+DROP GROUP nome_grupo;
+
+
+
+
+Formas de controle de acesso:
+	- Schemas -> CREATE SCHEMA nome_esquema;
+	- Views
+	- Controle de acesso por tabelas (válido para a aplicação, não para o banco).
+
+
+
+Seja pessimista, restritivo; Para evitar problemas por dar permissões demais.
+
+===============================================================================================================================================
+
+
+-- DCL
+-- Create user
+
+create user joaop with login createdb password 'joaop';
+
+select * FROM pg_catalog.pg_user;
+
+
+-- conectado com outro usuário (e senha)
+select current_user;
+
+
+-- concede permissão select na tabela aluno para user joaop
+grant select on aluno to joaop;
+
+
+
+-- cria grupo estudante com permissão de consultar as tabelas historico e disciplina e colocar joaop no grupo
+create group estudante;
+
+grant select on historico, disciplina to estudante;
+
+grant estudante to joaop;
+
+
+
+
+-- adicionar a permissão de inserir novas nacionalidades para estudante e testar a inserção com o usuário
+grant insert on nacionalidade to estudante;
