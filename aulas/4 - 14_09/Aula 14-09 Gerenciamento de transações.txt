@@ -1,0 +1,96 @@
+GERENCIAMENTO DE TRANSAÇÕES
+
+Controle de concorrência -> permite SGBDs multiusuário (onde muitos usuários podem acessar o SBD simultaneamente)
+ - Garante o isolamente em transações concorrentes
+ - Preserva a consistência do banco
+ - Resolve conflitos leitura-gravação e gravação-gravação
+
+ - Escalonador: assegura que as transações se mantenham consistentes quando executadas simultaneamente
+
+
+
+O que são transações?
+R: Coleção de operações que desempenham uma função lógica única dentro de uma aplicação. (Pode ter um comando apenas ou vários comandos)
+
+Quando a transação finaliza sem êxito, as modificações no banco devem ser desfeitas (rollback).
+
+Quando a transação conclui com sucesso, seus efeitos são materializados no banco de dados e ela é dita committed.
+
+
+
+Propriedades do controle transacional:
+- Atomic
+- Consistent
+- Isolated
+- Durable
+
+Atomicidade: princípio do "tudo ou nada" -> ou todas as mudanças têm efeito ou nenhuma delas é executada.
+Consistência: a transação não pode ser efetivada se o banco ficar em estado inconsistente.
+Isolamento: cada transação não toma conhecimento de outras transações concorrentes a ela no sistema.
+Durabilidade: depois de finalizada com sucesso, as alterações de uma transação são persistidas.
+
+
+
+COMANDOS:
+BEGIN | START -> iniciar processo de transação (varia de banco pra banco)
+COMMIT -> finaliza transação efetivando alterações
+ROLLBACK -> finaliza transação desfazendo alterações
+
+
+Níveis de isolamento:
+- Read uncommitted
+- Read committed
+- Repeatable read
+- Serializable
+
+
+Tipos de bloqueios
+- bloqueio binário: dois estados (locked e unlocked)
+- bloqueio múltiplo:
+	dois modos -> modo exclusivo (lock-X) permite ler e escrever
+		      modo compartilhado (lock-S) permite apenas leitura
+
+
+
+
+Starvation: inanição -> quando uma transação nunca finaliza mantendo um recurso travado esperando por algum evento
+
+Deadlock: bloqueio de determinados processos com condições específicas
+	Condições:
+		- não preempção (recursos alocados não podem ser tomados a força)
+		- espera circular (deve existir uma cadeia circular de dois ou mais processos esperando recurso do próximo membro da cadeia)
+		- exclusão mútua (cada recurso ou está alocado a um processo ou está disponível)
+		- posse e espera (cada processo pode solicitar um recurso e ficar bloqueado esperando outro recurso)
+
+
+
+Simulação deadlock:
+-- T1
+
+begin work;
+
+update usuario set nomusu = 'teste5'
+where codusu = 5;
+
+update usuario set nomusu = 'teste6'
+where codusu = 6;
+
+rollback;
+
+-- T2
+
+begin work;
+
+update usuario set nomusu = 'teste6'
+where codusu = 6;
+
+update usuario set nomusu = 'teste5'
+where codusu = 5;
+
+rollback;
+
+
+
+
+Locks:
+select * from pg_locks;

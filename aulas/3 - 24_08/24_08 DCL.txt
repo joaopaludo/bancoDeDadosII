@@ -6,7 +6,7 @@ Autenticação: fulano tem um usuário, tem acesso.
 Autorização: permissões que o fulano possui.
 
 
-Pricipais comandos:
+Principais comandos:
 - CREATE USER
 - GRANT
 - REVOKE
