@@ -1,0 +1,117 @@
+-- aula 21/09/2023
+-- comando explain
+
+
+-- mostra o plano de execução do comando
+explain analyze
+select * from aluno;
+
+-- coleta as estatísticas da tabela e armazena
+analyse aluno;
+
+
+
+-- exemplo
+analyze usuario;
+analyze reserva;
+
+explain analyze
+select u.nomusu, r.datres
+from usuario u
+inner join reserva r on r.codusu = u.codusu
+order by u.nomusu;
+
+
+-----------------------------------------------------------------------------------------------------------
+
+-- Tuning
+select * from pg_settings;
+
+select * from pg_settings
+where name like '%work_mem%';
+
+-----------------------------------------------------------------------------------------------------------
+
+-- Índices
+
+drop table pessoa;
+
+create table pessoa(
+	codpes serial constraint pessoa_pk primary key,
+	nompes varchar(40) not null,
+	cpfpes numeric(11) not null,
+	datnaspes date
+);
+
+insert into pessoa(nompes, cpfpes, datnaspes)
+values('Fulano', 123, '10/01/2023');
+
+insert into pessoa(nompes, cpfpes, datnaspes)
+values('Ciclano', 654987, '25/11/2000');
+
+insert into pessoa(nompes, cpfpes, datnaspes)
+values('Beltrano', 1548796, '02/04/1995');
+
+
+
+analyze pessoa;
+
+explain analyze
+select * from pessoa;
+
+
+
+-- secondary key
+create index pes_nompes_sk on pessoa(nompes);
+
+-- unique key
+create unique index pes_cpfpes_uk on pessoa(cpfpes);
+
+
+
+explain analyze
+select * from pessoa where codpes = 1;
+
+
+
+-- apagando os índices
+drop index pes_nompes_sk;
+drop index pes_cpfpes_uk;
+
+
+insert into pessoa(nompes, cpfpes)
+select 'Fulano '||t.id,
+t.id
+from generate_series(1548797, 2500000) as t(id);
+
+
+
+analyze pessoa;
+
+explain analyze
+select * from pessoa where cpfpes = 1600000;
+
+
+
+-- Quando criar índices?
+-- -> quando uma coluna é consultada (where) com frequência
+-- -> quando a coluna é usada na cláusula order by
+
+-- Sempre indexar chaves estrangeiras (para acelerar processos de junção) (necessita criar o índice explicitamente)
+
+-- Avaliar a seletividade do índice (indicador que vai de 0 a 1); Quanto maior a seletividade, maior a chance do banco utilizar o índice
+-- seletividade = (número de valores distintos para uma coluna dividido pela quantidade de registros)
+-- Ex:
+select count(distinct cpfpes) / count(cpfpes) from pessoa;
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+-- Exercício
+
+create index dep_ramtel_sk on departamento(ramtel);
+
+create unique index bib_cidbib_uk on biblioteca(cidbib);
+
+drop index for_nomfor_sk;
