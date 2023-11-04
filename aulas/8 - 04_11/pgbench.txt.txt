@@ -1,0 +1,5 @@
+
+pgbench -U postgres -h localhost -i -s 100 auladb
+
+
+pgbench -U postgres -h localhost -c 10 -j 2 -T 120 aulabd

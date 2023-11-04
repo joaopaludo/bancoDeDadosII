@@ -1,0 +1,21 @@
+
+pg_dump
+
+pg_restore
+
+
+
+-> no cmd
+
+backup:
+pg_dump -U postgres -h localhost -C -v -f c:\teste\backup_aulabd.sql aulabd
+
+backup apenas de dados:
+pg_dump -U postgres -h localhost -a -C -v -f c:\teste\backup_aulabd_dados.sql aulabd
+
+backup apenas do schema:
+pg_dump -U postgres -h localhost -s -C -v -f c:\teste\backup_aulabd_dados.sql aulabd
+
+
+restore backup:
+psql -U postgres -d postgres < c:\teste\backup_aulabd.sql
